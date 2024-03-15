@@ -17,16 +17,14 @@
                 <div class="navbar-nav me-auto">
                     <button type="button" id="login-button"> Login </button>  
                     <button type="button" id="settings-button"> Settings </button>   
+                    <button type="button" id="mainpage-button" onclick="location.href='mainpage.html'"> Main Page </button>
                 </div>
 
-                    <script>
-        
-                        const loginButton = document.getElementById("login-button");
-                        const settingButton = document.getElementById("settings-button");
-                        button.addEventListener('submit',gotoLogin());
-
-
-                    </script>
+                <script>
+                    const loginButton = document.getElementById("login-button");
+                    const settingButton = document.getElementById("settings-button");
+                    loginButton.addEventListener('submit',gotoLogin());
+                </script>
                 <!-- To input eve.json file path -->
                 <div class="navbar-nav mw-auto">
                 </div>  
