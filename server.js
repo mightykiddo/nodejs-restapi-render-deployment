@@ -22,10 +22,6 @@ app.use(express.json());
 // Routes
 app.use("/", userRoutes);
 
-app.use('/landingpage', function(req,res) {
-  res.sendfile('index.html');
-});
-
 app.use(errorHandler);
 
 const server = app.listen(port, () =>
