@@ -22,6 +22,11 @@ router.get("/mainpage", function(req,res) {
   res.sendFile(path.join(__dirname, '../frontends/mainpage.html'));
 });
 
+// get all users page
+router.get("/users", function(req,res) {
+  res.sendFile(path.join(__dirname, '../frontends/users.html'));
+});
+
 // create a user
 router.post("/createUser", createUser);
 

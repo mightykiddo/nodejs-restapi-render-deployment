@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Users</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <h1>Users</h1>
+    <table id="users">
+        <tr>
+            <th>Username</th>
+            <th>Email</th>
+            <th>ID</th>
+            <th>Firstname</th>
+            <th>Lastname</th>
+            <th>Telegram</th>
+            <th>Activity</th>
+        </tr>
+    </table>
+
+    <script>
+        fetch('/getUsers')
+            .then(response => response.json())
+            .then(data => {
+                console.log(data)
+                const users = data.users;
+                console.log(users)
+                const userTable = document.getElementById('users');
+                users.forEach(user => {
+                    const userRow = document.createElement('tr');
+                    userRow.innerHTML = `
+                        <td>${user.$username}</td>
+                        <td>${user.$email}</td>
+                        <td>${user.$_id}</td>
+                        <td>${user.$firstname}</td>
+                        <td>${user.$lastname}</td>
+                        <td>${user.$telegram}</td>
+                        <td>${user.$inactive ? 'Inactive' : 'Active'}</td>
+                    `;
+                    userTable.appendChild(userRow);
+                });
+            })
+            .catch(error => console.error('Error:', error));
+    </script>
+</body>
+</html>
