@@ -20,17 +20,13 @@ app.use(cors());
 app.use(express.json());
 
 // Routes
-app.use("/api/users", userRoutes);
+app.use("/users", userRoutes);
 
 // app.use("/", (req, res) => {
 //   return res.json({
 //     message: "Welcome to the Node.js REST API using ExpressJS and MongoDB"
 //   });
 // });
-
-app.get('/', function(req,res) {
-  res.sendfile('index.html');
-});
 
 app.use(errorHandler);
 
