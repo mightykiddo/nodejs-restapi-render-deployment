@@ -13,7 +13,7 @@ const router = express.Router();
 const path = require('path');
 
 // get main page
-router.get("/", function(req,res) {
+router.get("/mainpage", function(req,res) {
   res.sendFile(path.join(__dirname, '../index.html'));
 });
 
