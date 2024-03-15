@@ -13,7 +13,7 @@ const router = express.Router();
 
 // get main page
 router.get("/", function(req,res) {
-  res.sendfile('index.html');
+  res.sendfile('../index.html');
 });
 
 // create a user
