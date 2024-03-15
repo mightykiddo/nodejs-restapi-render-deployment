@@ -10,10 +10,11 @@ const {
 
 const router = express.Router();
 
+const path = require('path');
 
 // get main page
 router.get("/", function(req,res) {
-  res.sendfile('../index.html');
+  res.sendFile(path.join(__dirname, '../index.html'));
 });
 
 // create a user
