@@ -4,19 +4,17 @@ const {
   updateUser,
   deleteUser,
   getUser,
-  getUsers,
-  getMain
+  getUsers
 } = require("../controllers/user");
 
 
 const router = express.Router();
 
-app.get('/', function(req,res) {
-  res.sendfile('index.html');
-});
 
 // get main page
-router.get("/", getMain);
+router.get("/", function(req,res) {
+  res.sendfile('index.html');
+});
 
 // create a user
 router.post("/createUser", createUser);
