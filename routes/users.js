@@ -14,12 +14,12 @@ const path = require('path');
 
 // get landing page
 router.get("/", function(req,res) {
-  res.sendFile(path.join(__dirname, '../index.html'));
+  res.sendFile(path.join(__dirname, '../frontends/landingpage.html'));
 });
 
 // get main page
 router.get("/mainpage", function(req,res) {
-  res.sendFile(path.join(__dirname, '../index.html'));
+  res.sendFile(path.join(__dirname, '../frontends/mainpage.html'));
 });
 
 // create a user
