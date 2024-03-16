@@ -1,4 +1,5 @@
 const User = require("../models/User");
+const Flow = require("../models/Flow");
 
 const createUser = async (req, res, next) => {
   try {
@@ -33,10 +34,25 @@ const createUser = async (req, res, next) => {
 const getUsers = async (req, res, next) => {
   try {
     const users = await User.find();
-
+    console.log(users)
     res.status(200).json({
       success: true,
       users,
+    });
+  } catch (error) {
+    console.log(error);
+    return next(error);
+  }
+};
+
+const getTraffics = async (req, res, next) => {
+  try {
+    const flow = await Flow.find();
+    console.log(flow)
+
+    res.status(200).json({
+      success: true,
+      flow,
     });
   } catch (error) {
     console.log(error);
@@ -122,4 +138,5 @@ module.exports = {
   createUser,
   updateUser,
   deleteUser,
+  getTraffics,
 };

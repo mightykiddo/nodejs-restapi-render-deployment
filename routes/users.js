@@ -4,7 +4,8 @@ const {
   updateUser,
   deleteUser,
   getUser,
-  getUsers
+  getUsers,
+  getTraffics
 } = require("../controllers/user");
 
 
@@ -26,6 +27,14 @@ router.get("/mainpage", function(req,res) {
 router.get("/users", function(req,res) {
   res.sendFile(path.join(__dirname, '../frontends/users.html'));
 });
+
+// get traffic page
+router.get("/trafficpage", function(req,res) {
+  res.sendFile(path.join(__dirname, '../frontends/traffic.html'));
+});
+
+// get all traffic
+router.get("/getTraffics", getTraffics);
 
 // create a user
 router.post("/createUser", createUser);
