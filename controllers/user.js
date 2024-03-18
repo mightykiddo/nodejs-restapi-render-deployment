@@ -45,20 +45,72 @@ const getUsers = async (req, res, next) => {
   }
 };
 
+// const getTraffics = async (req, res, next) => {
+//   try {
+//     const flow = await Flow.find().sort({ timestamp: -1 }); // Sort by timestamp in descending order
+//     console.log(flow)
+
+//     res.status(200).json({
+//       success: true,
+//       flow,
+//     });
+//   } catch (error) {
+//     console.log(error);
+//     return next(error);
+//   }
+// };
+
+
 const getTraffics = async (req, res, next) => {
   try {
-    const flow = await Flow.find();
-    console.log(flow)
+    let query = {}; // Initialize an empty query object
+    let numericFields = ['flow_id', 'src_port', 'dest_port'];
+    let stringFields = ['event_type', 'src_ip', 'dest_ip', 'proto', 'app_proto'];
+
+    // Check if search keyword is provided in the request
+    if (req.query.search) {
+      const keyword = req.query.search.toString();
+      let numericQuery = [];
+      let stringQuery = [];
+
+      // Use regex to perform a case-insensitive search across multiple fields
+      for (let field of numericFields) {
+        if (!isNaN(keyword)) {
+          numericQuery.push({ [field]: Number(keyword) });
+        }
+      }
+
+      for (let field of stringFields) {
+        stringQuery.push({ [field]: { $regex: keyword, $options: 'i' } });
+      }
+
+      query.$or = [...numericQuery, ...stringQuery];
+    }
+
+    // // Check if event type is provided in the request
+    // if (req.query.eventType) {
+    //   query.event_type = req.query.eventType;
+    // }
+
+    // // Check if protocol is provided in the request
+    // if (req.query.protocol) {
+    //   query.proto = req.query.protocol;
+    // }
+
+    const flows = await Flow.find(query).sort({ timestamp: -1 }); // Apply the query and sort by timestamp
+    console.log(flows);
 
     res.status(200).json({
       success: true,
-      flow,
+      flow: flows,
     });
   } catch (error) {
     console.log(error);
     return next(error);
   }
 };
+
+
 
 const getUser = async (req, res, next) => {
   const { id } = req.params;
@@ -139,4 +191,5 @@ module.exports = {
   updateUser,
   deleteUser,
   getTraffics,
+  
 };

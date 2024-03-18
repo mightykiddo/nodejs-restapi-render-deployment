@@ -5,7 +5,7 @@ const {
   deleteUser,
   getUser,
   getUsers,
-  getTraffics
+  getTraffics,
 } = require("../controllers/user");
 
 
@@ -32,6 +32,7 @@ router.get("/users", function(req,res) {
 router.get("/trafficpage", function(req,res) {
   res.sendFile(path.join(__dirname, '../frontends/traffic.html'));
 });
+
 
 // get all traffic
 router.get("/getTraffics", getTraffics);
