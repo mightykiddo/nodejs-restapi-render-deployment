@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Traffic</title>
+    <title>Threats</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -50,23 +50,22 @@
         <!-- Table to display the data -->
         <div class="chart-container" style="width: 100%; height: 80%; padding-left: 5%; padding-right: 5%;" align="center">
             <div class="border" style="height: 100%;  overflow-x: auto;">
-                <table class="display" id="traffics" align="center" style="width: 100%;">
+                <table class="display" id="threats" align="center" style="width: 100%;">
                     <thead>
                         <tr>
                             <th class="display displayheader">Num</th>
                             <th class="display displayheader">Timestamp</th>
-                            <th class="display displayheader">Flow ID</th>
-                            <th class="display displayheader">Event Type</th>
-                            <th class="display displayheader">Source IP</th>
-                            <th class="display displayheader">Source Port</th>
-                            <th class="display displayheader">Destination IP</th>
-                            <th class="display displayheader">Destination Port</th>
+                            <th class="display displayheader">Rule ID</th>
+                            <th class="display displayheader">Message</th>
+                            <th class="display displayheader">Classification</th>
+                            <th class="display displayheader">Severity</th>
                             <th class="display displayheader">Protocol</th>
-                            <th class="display displayheader">App Protocol</th>
-                            <!-- <th class="display displayheader" style="width: 5%;">Details</th> -->
+                            <th class="display displayheader">Source IP</th>
+                            <th class="display displayheader">Destination IP</th>
+                            
                         </tr>
                     </thead>
-                    <tbody id="trafficTableBody">
+                    <tbody id="threatTableBody">
                         <!-- Table rows will be dynamically added here -->
                     </tbody>
                 </table>
@@ -87,7 +86,7 @@
         $(document).ready(function() {
 
             // Sorting
-            $("#traffics").tablesorter(); 
+            $("#threats").tablesorter(); 
 
             // Function to load initial data upon page load
             loadInitialData();
@@ -99,49 +98,48 @@
                 // Send AJAX request to fetch search results
                 $.ajax({
                     type: 'GET',
-                    url: '/getTraffics?' + formData, // Adjust URL based on your server endpoint
+                    url: '/getThreats?' + formData, // Adjust URL based on your server endpoint
                     success: function(data) {
                         // Clear existing table rows
-                        $('#trafficTableBody').empty();
+                        $('#threatTableBody').empty();
                         // Iterate through fetched data and append rows to the table
-                        $.each(data.flow, function(index, flow) {
-                            var datetime = new Date(flow.timestamp);
+                        $.each(data.threats, function(index, threats) {
+                            var datetime = new Date(threats.timestamp);
                             var formatted = datetime.toISOString().slice(0, 19).replace("T", " ");
                             var userRow = `
                                 <tr>
                                     <td>${index + 1}</td>
                                     <td>${formatted}</td>
-                                    <td>${flow.flow_id}</td>
-                                    <td>${flow.event_type}</td>
-                                    <td>${flow.src_ip}</td>
-                                    <td>${flow.src_port}</td>
-                                    <td>${flow.dest_ip}</td>
-                                    <td>${flow.dest_port}</td>
-                                    <td>${flow.proto}</td>
-                                    <td>${flow.app_proto}</td>
+                                    <td>${threats.ruleID}</td>
+                                    <td>${threats.message}</td>
+                                    <td>${threats.classification}</td>
+                                    <td>${threats.severity}</td>
+                                    <td>${threats.protocol}</td>
+                                    <td>${threats.src_IP}</td>
+                                    <td>${threats.dest_IP}</td>
                                     
                                 </tr>`;
-                            $('#trafficTableBody').append(userRow);
+                            $('#threatTableBody').append(userRow);
                         });
 
                         // Color coding
-                        $('#traffics tbody tr').each(function() {
-                            var event = $(this).find('td:nth-child(4)').text();
-                            var color;
-                            if (event === "flow") {
-                                color = '#CCCCFF';
-                            } else if (event === "dns") {
-                                color = '#CCFFCC';
-                            } else if (event === "tls") {
-                                color = '#FFFFCC';
-                            } else if (event === "http") {
-                                color = '#FFCCCC';
+                        $('#threats tbody tr').each(function() {
+                            var severity = parseInt($(this).find('td:nth-child(6)').text()); // get severity level
+                            var color; // initialize variable to hold color
+                            if (severity === 1) {
+                                color = '#CCCCFF'; // light blue for severity 1
+                            } else if (severity === 2) {
+                                color = '#CCFFCC'; // light green for severity 2
+                            } else if (severity === 3) {
+                                color = '#FFFFCC'; // light yellow for severity 3
+                            } else if (severity === 4) {
+                                color = '#FFCCCC'; // light red for severity 4
                             }
-                            $(this).css('background-color', color);
+                            $(this).css('background-color', color); // add background color inline
                         });
 
                         // Update tablesorter after appending new rows
-                        $("#traffics").trigger("update");
+                        $("#threats").trigger("update");
 
                     },
                     error: function(xhr, status, error) {
@@ -156,49 +154,48 @@
         function loadInitialData() {
             $.ajax({
                 type: 'GET',
-                url: '/getTraffics?',
+                url: '/getThreats?',
                 success: function(data) {
                     // Clear existing table rows
-                    $('#trafficTableBody').empty();
+                    $('#threatTableBody').empty();
                     // Iterate through fetched data and append rows to the table
-                    $.each(data.flow, function(index, flow) {
-                        var datetime = new Date(flow.timestamp);
+                    $.each(data.threats, function(index, threats) {
+                        var datetime = new Date(threats.timestamp);
                         var formatted = datetime.toISOString().slice(0, 19).replace("T", " ");
                         var userRow = `
                             <tr>
                                 <td>${index + 1}</td>
                                 <td>${formatted}</td>
-                                <td>${flow.flow_id}</td>
-                                <td>${flow.event_type}</td>
-                                <td>${flow.src_ip}</td>
-                                <td>${flow.src_port}</td>
-                                <td>${flow.dest_ip}</td>
-                                <td>${flow.dest_port}</td>
-                                <td>${flow.proto}</td>
-                                <td>${flow.app_proto}</td>
+                                <td>${threats.ruleID}</td>
+                                <td>${threats.message}</td>
+                                <td>${threats.classification}</td>
+                                <td>${threats.severity}</td>
+                                <td>${threats.protocol}</td>
+                                <td>${threats.src_IP}</td>
+                                <td>${threats.dest_IP}</td>
                                 
                             </tr>`;
-                        $('#trafficTableBody').append(userRow);
+                        $('#threatTableBody').append(userRow);
                     });
 
                     // Color coding
-                    $('#traffics tbody tr').each(function() {
-                        var event = $(this).find('td:nth-child(4)').text();
-                        var color;
-                        if (event === "flow") {
-                            color = '#CCCCFF';
-                        } else if (event === "dns") {
-                            color = '#CCFFCC';
-                        } else if (event === "tls") {
-                            color = '#FFFFCC';
-                        } else if (event === "http") {
-                            color = '#FFCCCC';
+                    $('#threats tbody tr').each(function() {
+                        var severity = parseInt($(this).find('td:nth-child(6)').text()); // get severity level
+                        var color; // initialize variable to hold color
+                        if (severity === 1) {
+                            color = '#CCCCFF'; // light blue for severity 1
+                        } else if (severity === 2) {
+                            color = '#CCFFCC'; // light green for severity 2
+                        } else if (severity === 3) {
+                            color = '#FFFFCC'; // light yellow for severity 3
+                        } else if (severity === 4) {
+                            color = '#FFCCCC'; // light red for severity 4
                         }
-                        $(this).css('background-color', color);
+                        $(this).css('background-color', color); // add background color inline
                     });
 
                     // Update tablesorter after appending new rows
-                    $("#traffics").trigger("update");
+                    $("#threats").trigger("update");
 
                 },
                 error: function(xhr, status, error) {

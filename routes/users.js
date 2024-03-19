@@ -6,6 +6,7 @@ const {
   getUser,
   getUsers,
   getTraffics,
+  getThreats,
 } = require("../controllers/user");
 
 
@@ -33,6 +34,13 @@ router.get("/trafficpage", function(req,res) {
   res.sendFile(path.join(__dirname, '../frontends/traffic.html'));
 });
 
+// get threats page
+router.get("/threatspage", function(req,res) {
+  res.sendFile(path.join(__dirname, '../frontends/threats.html'));
+});
+
+// get all threats
+router.get("/getThreats", getThreats);
 
 // get all traffic
 router.get("/getTraffics", getTraffics);

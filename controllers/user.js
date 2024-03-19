@@ -1,5 +1,7 @@
 const User = require("../models/User");
 const Flow = require("../models/Flow");
+const Threat = require("../models/Threats");
+const moment = require('moment');
 
 const createUser = async (req, res, next) => {
   try {
@@ -65,7 +67,7 @@ const getTraffics = async (req, res, next) => {
   try {
     let query = {}; // Initialize an empty query object
     let numericFields = ['flow_id', 'src_port', 'dest_port'];
-    let stringFields = ['event_type', 'src_ip', 'dest_ip', 'proto', 'app_proto'];
+    let stringFields = ['event_type', 'src_ip', 'dest_ip', 'proto', 'app_proto', 'timestamp'];
 
     // Check if search keyword is provided in the request
     if (req.query.search) {
@@ -82,6 +84,28 @@ const getTraffics = async (req, res, next) => {
 
       for (let field of stringFields) {
         stringQuery.push({ [field]: { $regex: keyword, $options: 'i' } });
+      }
+
+      // Check if the keyword is a date or a timestamp
+      if (!isNaN(Date.parse(keyword))) {
+        // Convert the keyword to a Date object
+        let date = new Date(keyword);
+        // Create a range for the timestamp
+        let start = new Date(date);
+        let end = new Date(date);
+        if (keyword.length === 10) { // If the keyword is a date
+          start.setHours(0, 0, 0, 0);
+          end.setHours(23, 59, 59, 999);
+        } else { // If the keyword is a timestamp
+          start.setSeconds(start.getSeconds() );
+          end.setSeconds(end.getSeconds() + 1);
+        }
+        // Convert the date range back to the original timestamp format
+        let startTimestamp = moment.utc(start).add(16, 'hours').format('YYYY-MM-DDTHH:mm:ss.SSSSSSZ');
+        let endTimestamp = moment.utc(end).add(16, 'hours').format('YYYY-MM-DDTHH:mm:ss.SSSSSSZ');
+        console.log(startTimestamp, endTimestamp)
+        // Add the timestamp range to the query
+        stringQuery.push({ timestamp: { $gte: startTimestamp, $lte: endTimestamp } });
       }
 
       query.$or = [...numericQuery, ...stringQuery];
@@ -110,7 +134,58 @@ const getTraffics = async (req, res, next) => {
   }
 };
 
+const getThreats = async (req, res, next) => {
+  try {
+    let query = {}; // Initialize an empty query object
+    let stringFields = ['timestamp', 'ruleID', 'message', 'classification', 'severity', 'protocol', 'src_IP', 'dest_IP'];
 
+    // Check if search keyword is provided in the request
+    if (req.query.search) {
+      const keyword = req.query.search.toString();
+      
+      let stringQuery = [];
+
+      for (let field of stringFields) {
+        stringQuery.push({ [field]: { $regex: keyword, $options: 'i' } });
+      }
+
+      // Check if the keyword is a date or a timestamp
+      if (!isNaN(Date.parse(keyword))) {
+        // Convert the keyword to a Date object
+        let date = new Date(keyword);
+        // Create a range for the timestamp
+        let start = new Date(date);
+        let end = new Date(date);
+        if (keyword.length === 10) { // If the keyword is a date
+          start.setHours(0, 0, 0, 0);
+          end.setHours(23, 59, 59, 999);
+        } else { // If the keyword is a timestamp
+          start.setSeconds(start.getSeconds() );
+          end.setSeconds(end.getSeconds() + 1);
+        }
+        // Convert the date range back to the original timestamp format
+        let startTimestamp = moment.utc(start).add(16, 'hours').format('YYYY-MM-DDTHH:mm:ss.SSSSSSZ');
+        let endTimestamp = moment.utc(end).add(16, 'hours').format('YYYY-MM-DDTHH:mm:ss.SSSSSSZ');
+        console.log(startTimestamp, endTimestamp)
+        // Add the timestamp range to the query
+        stringQuery.push({ timestamp: { $gte: startTimestamp, $lte: endTimestamp } });
+      }
+
+      query.$or = [...stringQuery];
+    }
+
+    const threats = await Threat.find(query).sort({ timestamp: -1 }); // Apply the query and sort by timestamp
+    console.log(threats);
+
+    res.status(200).json({
+      success: true,
+      threats: threats,
+    });
+  } catch (error) {
+    console.log(error);
+    return next(error);
+  }
+};
 
 const getUser = async (req, res, next) => {
   const { id } = req.params;
@@ -191,5 +266,5 @@ module.exports = {
   updateUser,
   deleteUser,
   getTraffics,
-  
+  getThreats,
 };
