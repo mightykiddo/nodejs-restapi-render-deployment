@@ -101,8 +101,8 @@ const getTraffics = async (req, res, next) => {
           end.setSeconds(end.getSeconds() + 1);
         }
         // Convert the date range back to the original timestamp format
-        let startTimestamp = moment.utc(start).add(16, 'hours').format('YYYY-MM-DDTHH:mm:ss.SSSSSSZ');
-        let endTimestamp = moment.utc(end).add(16, 'hours').format('YYYY-MM-DDTHH:mm:ss.SSSSSSZ');
+        let startTimestamp = moment.utc(start).add(8, 'hours').format('YYYY-MM-DDTHH:mm:ss.SSSSSSZ');
+        let endTimestamp = moment.utc(end).add(8, 'hours').format('YYYY-MM-DDTHH:mm:ss.SSSSSSZ');
         console.log(startTimestamp, endTimestamp)
         // Add the timestamp range to the query
         stringQuery.push({ timestamp: { $gte: startTimestamp, $lte: endTimestamp } });
@@ -164,8 +164,8 @@ const getThreats = async (req, res, next) => {
           end.setSeconds(end.getSeconds() + 1);
         }
         // Convert the date range back to the original timestamp format
-        let startTimestamp = moment.utc(start).add(16, 'hours').format('YYYY-MM-DDTHH:mm:ss.SSSSSSZ');
-        let endTimestamp = moment.utc(end).add(16, 'hours').format('YYYY-MM-DDTHH:mm:ss.SSSSSSZ');
+        let startTimestamp = moment.utc(start).add(8, 'hours').format('YYYY-MM-DDTHH:mm:ss.SSSSSSZ');
+        let endTimestamp = moment.utc(end).add(8, 'hours').format('YYYY-MM-DDTHH:mm:ss.SSSSSSZ');
         console.log(startTimestamp, endTimestamp)
         // Add the timestamp range to the query
         stringQuery.push({ timestamp: { $gte: startTimestamp, $lte: endTimestamp } });
