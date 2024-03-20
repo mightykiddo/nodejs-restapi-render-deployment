@@ -18,13 +18,15 @@
     <h1>Users</h1>
     <table id="users">
         <tr>
-            <th>Username</th>
-            <th>Email</th>
             <th>ID</th>
-            <th>Firstname</th>
-            <th>Lastname</th>
+            <th>User Id</th>
+            <th>Name</th>
+            <th>Email</th>
             <th>Telegram</th>
+            <th>Password</th>
             <th>Activity</th>
+            <th>Alert</th>
+            <th>Username</th>
         </tr>
     </table>
 
@@ -39,13 +41,15 @@
                 users.forEach(user => {
                     const userRow = document.createElement('tr');
                     userRow.innerHTML = `
-                        <td>${user.$username}</td>
-                        <td>${user.$email}</td>
-                        <td>${user.$_id}</td>
-                        <td>${user.$firstname}</td>
-                        <td>${user.$lastname}</td>
-                        <td>${user.$telegram}</td>
-                        <td>${user.$inactive ? 'Inactive' : 'Active'}</td>
+                        <td>${user._id}</td>
+                        <td>${user.user_id}</td>
+                        <td>${user.name}</td>
+                        <td>${user.email}</td>
+                        <td>${user.telegram}</td>
+                        <td>${user.password}</td>
+                        <td>${user.inactive ? 'Inactive' : 'Active'}</td>
+                        <td>${user.alert ? 'Active' : 'Inactive'}</td>
+                        <td>${user.username}</td>
                     `;
                     userTable.appendChild(userRow);
                 });

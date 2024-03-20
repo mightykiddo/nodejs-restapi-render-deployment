@@ -39,6 +39,11 @@ router.get("/threatspage", function(req,res) {
   res.sendFile(path.join(__dirname, '../frontends/threats.html'));
 });
 
+// get createAccount page
+router.get("/createAccount", function(req,res) {
+  res.sendFile(path.join(__dirname, '../frontends/createAccount.html'));
+});
+
 // get all threats
 router.get("/getThreats", getThreats);
 

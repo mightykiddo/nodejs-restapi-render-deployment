@@ -12,10 +12,14 @@ const userSchema = new mongoose.Schema(
       required: [true, "Email is required"],
       unique: true,
     },
+    username: String,
+    user_id: Number,
+    telegram: String,
+    password: String,
+    inactive: Boolean,
+    alert: Boolean,
   },
-  {
-    timestamps: true,
-  }
+  
 );
 
 module.exports = mongoose.model("User", userSchema);

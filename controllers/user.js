@@ -5,7 +5,7 @@ const moment = require('moment');
 
 const createUser = async (req, res, next) => {
   try {
-    const { name, email } = req.body;
+    const { name, username, email, telegram, password, inactive, alert } = req.body;
     if (!name || !email) {
       res.status(400);
       return next(new Error("name & email fields are required"));
@@ -19,8 +19,14 @@ const createUser = async (req, res, next) => {
       return next(new Error("User already exists"));
     }
 
+    // find the user with the largest user_id
+    const lastUser = await User.findOne().sort({ user_id: -1 });
+
+    // if no users exist yet, start counting from 1, else increment the largest user_id
+    const user_id = lastUser && lastUser.user_id ? lastUser.user_id + 1 : 1;
+
     const user = await User.create({
-      name, email
+      name, username, email, user_id, telegram, password, inactive, alert
     });
 
     res.status(200).json({
@@ -46,22 +52,6 @@ const getUsers = async (req, res, next) => {
     return next(error);
   }
 };
-
-// const getTraffics = async (req, res, next) => {
-//   try {
-//     const flow = await Flow.find().sort({ timestamp: -1 }); // Sort by timestamp in descending order
-//     console.log(flow)
-
-//     res.status(200).json({
-//       success: true,
-//       flow,
-//     });
-//   } catch (error) {
-//     console.log(error);
-//     return next(error);
-//   }
-// };
-
 
 const getTraffics = async (req, res, next) => {
   try {
@@ -101,8 +91,8 @@ const getTraffics = async (req, res, next) => {
           end.setSeconds(end.getSeconds() + 1);
         }
         // Convert the date range back to the original timestamp format
-        let startTimestamp = moment.utc(start).add(16, 'hours').format('YYYY-MM-DDTHH:mm:ss.SSSSSSZ');
-        let endTimestamp = moment.utc(end).add(16, 'hours').format('YYYY-MM-DDTHH:mm:ss.SSSSSSZ');
+        let startTimestamp = moment.utc(start).add(8, 'hours').format('YYYY-MM-DDTHH:mm:ss.SSSSSSZ');
+        let endTimestamp = moment.utc(end).add(8, 'hours').format('YYYY-MM-DDTHH:mm:ss.SSSSSSZ');
         console.log(startTimestamp, endTimestamp)
         // Add the timestamp range to the query
         stringQuery.push({ timestamp: { $gte: startTimestamp, $lte: endTimestamp } });
@@ -164,8 +154,8 @@ const getThreats = async (req, res, next) => {
           end.setSeconds(end.getSeconds() + 1);
         }
         // Convert the date range back to the original timestamp format
-        let startTimestamp = moment.utc(start).add(16, 'hours').format('YYYY-MM-DDTHH:mm:ss.SSSSSSZ');
-        let endTimestamp = moment.utc(end).add(16, 'hours').format('YYYY-MM-DDTHH:mm:ss.SSSSSSZ');
+        let startTimestamp = moment.utc(start).add(8, 'hours').format('YYYY-MM-DDTHH:mm:ss.SSSSSSZ');
+        let endTimestamp = moment.utc(end).add(8, 'hours').format('YYYY-MM-DDTHH:mm:ss.SSSSSSZ');
         console.log(startTimestamp, endTimestamp)
         // Add the timestamp range to the query
         stringQuery.push({ timestamp: { $gte: startTimestamp, $lte: endTimestamp } });
