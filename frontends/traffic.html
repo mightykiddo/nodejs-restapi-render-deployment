@@ -30,7 +30,7 @@
                     <button type="button" id="downloads-button" onclick="location.href='downloads'"> Downloads </button>
                     <button type="button" id="settings-button" onclick="location.href='settings'"> Settings </button>
                     <button type="button" id="profile-button" onclick="location.href='profile'"> Profile </button>
-                    <button type="button" id="logout-button" onclick="location.href='/'"> Logout </button>
+                    <button type="button" id="logout-button" > Logout </button>
                 </div>
             </div>
         </div>
@@ -208,5 +208,19 @@
         }
 
     </script>
+
+    <script>
+        // Logout functionality
+        document.getElementById('logout-button').addEventListener('click', function() {
+            // Clear user-related data from localStorage
+            localStorage.removeItem('user_id');
+            localStorage.removeItem('name');
+            localStorage.removeItem('email');
+
+            // Redirect to the login page or any other appropriate page
+            window.location.href = '/'; // Redirect to the main page
+        });
+    </script>
+
 </body>
 </html>

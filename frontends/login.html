@@ -1,0 +1,230 @@
+<script> type = "text/javascript"; src = "controller/url-router.js" </script>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<html>
+	<head>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<style>
+			body {
+				font-family: Arial, sans-serif;
+				text-align: center; /* Centers content horizontally */
+			}
+			
+			.navbar-brand {
+				color:  white;
+			}
+			
+			.navbar-brand:hover {
+				color:  white;
+			}
+			
+			.navbar-custom {
+			    /* background-color: #0D7C17; */
+				background-image: url('../images/navbarBackground.jpg');
+				background-size: cover;
+			}
+			
+			.nav-button {
+				background-color: #337D69; /* Green */
+				border: none;
+				border-radius: 5px;
+				color: white;
+				padding: 10px 25px;
+				text-align: center;
+				text-decoration: none;
+				display: inline-block;
+				font-size: 16px;
+				margin: 4px 2px;
+				transition-duration: 0.2s;
+				cursor: pointer;
+			}
+			
+			.nav-button:hover {
+			    background-color: rgb(50, 170, 101);
+			}
+			
+			.container {
+				background-color: #fff;
+				padding: 30px;
+				border-radius: 10px;
+				box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1); /* Add shadow */
+				width: 400px;
+				text-align: center; /* Center align the contents */
+				border: 2px solid rgb(54, 69, 79); /* Add border */
+			}
+			
+			h1 {
+				text-align: center;
+				color: #333;
+				margin-top: 10px;
+			}
+
+			/* Center placeholder text */
+			::placeholder {
+				text-align: center;
+			}
+			
+			.loginForm {
+				text-align: center;
+			}
+			
+			input[type="text"], input[type="password"] {
+				width: 100%;
+				padding: 10px;
+				margin: 10px 0;
+				border: 1px solid #ccc;
+				border-radius: 5px;
+				box-sizing: border-box;
+			}
+
+			/* Change border color on focus */
+			input[type="text"]:focus,
+			input[type="password"]:focus {
+				border-color: #666; /* Set border color on focus */
+			}
+			
+			.login-button {
+				background-color: #A9A9A9;
+				color: #fff;
+				border: none;
+				border-radius: 5px;
+				padding: 15px 38px;
+				cursor: pointer;
+				transition: background-color 0.3s;
+			}
+						
+			.create-button {
+				background-color: #A9A9A9;
+				color: #fff;
+				border: none;
+				border-radius: 5px;
+				padding: 18px 38px;
+				cursor: pointer;
+				transition: background-color 0.3s;
+			}
+			
+			.create-button:hover, .login-button:hover {
+				background-color: #B2BEB5;
+			}
+			
+			.button-container {
+				text-align: center;
+			}
+
+			.footer-container {
+				display: flex;
+				background-color: #f9f9f9;
+				border: 1px solid #ccc;
+			}
+			
+			.footer-section {
+				flex: 1;
+				padding: 60px;
+				position: relative;
+			}
+			
+			.footer-section:not(:last-child):before {
+				content: '';
+				position: absolute;
+				top: 0;
+				bottom: 0;
+				right: 0;
+				width: 1px;
+				background-color: #ccc;
+			}
+			
+			footer {
+				text-align:center;
+				/* background-color: #0D7C17; */
+				background-image: url('../images/navbarBackground.jpg');
+				background-size: cover;
+				padding: 15px;
+				position: fixed;
+				bottom: 0;
+				width: 100%;
+				color: white;
+			}
+
+		</style>
+	</head>
+	<body> 
+		<!-- Navigation bar for accessing other pages -->
+		<nav class="navbar navbar-expand-lg navbar-custom" style="width: 100%; height: 11%">
+			<div class="container-fluid">
+				<a class="navbar-brand">
+					<img src="../images/Logo2.png" width="50" height="10%">
+					DataSafeGuard
+				</a>
+				<!-- Navigation bar buttons -->
+				<div class="navbar-collapse">
+					<div class="navbar-nav me-auto">
+						<button type="button" class="nav-button" id="landing-button" onclick="location.href='/'"> Main Page </button>
+						<button type="button" class="nav-button" id="about-button" onclick="location.href='about'"> About </button>
+						<button type="button" class="nav-button" id="contact-button" onclick="location.href='contact'"> Contact </button>
+					</div>
+				</div>
+			</div>
+		</nav><br /><br /><br />   
+			<div class="container">
+				<h2>Login</h2>
+				   <form id="loginForm">
+					   <label for="username">Username:</label><br>
+					   <input type="text" id="username" name="username" placeholder="Please enter your username"><br>
+					   <label for="password">Password:</label><br>
+					   <input type="password" id="password" name="password" placeholder="Please enter your password"><br><br>
+					   <button type="submit" class="login-button" id="login-button"> Login </button>
+				   </form>
+			</div><br />
+
+		<div class="button-container">
+			<button type="button" class="create-button" id="create-account-button" onclick="location.href='createAccount'"> Create Account </button>
+		</div>	
+
+		<footer id="footer">
+            <script>
+                // Get the current year
+                var currentYear = new Date().getFullYear();
+
+                // Set the content of the footer to display only the current year
+                document.getElementById("footer").innerHTML = "&copy; " + currentYear + " DataSafeGuard ";
+            </script>
+	    </footer>
+
+        <script>
+            document.getElementById('loginForm').addEventListener('submit', function(event) {
+                event.preventDefault();
+    
+                const username = document.getElementById('username').value;
+                const password = document.getElementById('password').value;
+    
+                fetch('/getUser', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ username, password }),
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Success:', data);
+                    // Store user information on the client-side
+                    localStorage.setItem('user_id', parseInt(data.user.user_id));
+                    localStorage.setItem('name', data.user.name);
+                    localStorage.setItem('email', data.user.email);
+                    // Redirect to traffic page
+                    window.location.href = 'traffic';
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                    alert('Login failed. Please try again.'); 
+                });
+            });
+        </script>
+
+	</body>
+</html>

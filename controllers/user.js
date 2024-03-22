@@ -177,10 +177,72 @@ const getThreats = async (req, res, next) => {
   }
 };
 
-const getUser = async (req, res, next) => {
-  const { id } = req.params;
+const getProfile = async (req, res, next) => {
+  const { user_id } = req.params;
   try {
-    const user = await User.findById(id);
+    // Convert user_id to an integer
+    const userIdInteger = parseInt(user_id);
+
+    // Check if userIdInteger is a valid number
+    if (isNaN(userIdInteger)) {
+      res.status(400);
+      return next(new Error("Invalid user ID"));
+    }
+
+    const user = await User.findOne({ user_id: userIdInteger });
+
+    if (!user) {
+      res.status(404);
+      return next(new Error("User not found"));
+    }
+
+    res.status(200).json({
+      success: true,
+      user,
+    });
+  } catch (error) {
+    console.log(error);
+    return next(error);
+  }
+};
+
+const updateProfile = async (req, res, next) => {
+  const { user_id } = req.body;
+  try {
+
+      // Convert user_id to an integer
+      const userIdInteger = parseInt(user_id);
+
+      // Find user by user_id
+      const user = await User.findOne({ user_id: userIdInteger });
+
+      if (!user) {
+          res.status(404);
+          return next(new Error("User not found"));
+      }
+
+      // Update user fields if they are provided in the request body
+      if (req.body.changeEmail) user.email = req.body.changeEmail;
+      if (req.body.changeUsername) user.username = req.body.changeUsername;
+      if (req.body.changeTelegram) user.telegram = req.body.changeTelegram;
+      if (req.body.changeName) user.name = req.body.changeName;
+      if (req.body.changePassword) user.password = req.body.changePassword;
+      //if (req.body.telegramNotification !== undefined) user.telegramNotification = req.body.telegramNotification;
+
+      // Save the updated user
+      await user.save();
+
+      res.status(200).json({ success: true, message: "Profile updated successfully" });
+  } catch (error) {
+      console.error(error);
+      res.status(500).json({ success: false, message: "Failed to update profile" });
+  }
+};
+
+const getUser = async (req, res, next) => {
+  const { username, password } = req.body;
+  try {
+    const user = await User.findOne({ username, password });
 
     if (!user) {
       res.status(404);
@@ -257,4 +319,6 @@ module.exports = {
   deleteUser,
   getTraffics,
   getThreats,
+  getProfile,
+  updateProfile,
 };

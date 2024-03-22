@@ -7,6 +7,8 @@ const {
   getUsers,
   getTraffics,
   getThreats,
+  getProfile,
+  updateProfile,
 } = require("../controllers/user");
 
 
@@ -30,12 +32,12 @@ router.get("/users", function(req,res) {
 });
 
 // get traffic page
-router.get("/trafficpage", function(req,res) {
+router.get("/traffic", function(req,res) {
   res.sendFile(path.join(__dirname, '../frontends/traffic.html'));
 });
 
 // get threats page
-router.get("/threatspage", function(req,res) {
+router.get("/threats", function(req,res) {
   res.sendFile(path.join(__dirname, '../frontends/threats.html'));
 });
 
@@ -43,6 +45,22 @@ router.get("/threatspage", function(req,res) {
 router.get("/createAccount", function(req,res) {
   res.sendFile(path.join(__dirname, '../frontends/createAccount.html'));
 });
+
+// get login page
+router.get("/login", function(req,res) {
+  res.sendFile(path.join(__dirname, '../frontends/login.html'));
+});
+
+// get login page
+router.get("/profile", function(req,res) {
+  res.sendFile(path.join(__dirname, '../frontends/profile.html'));
+});
+
+// update a user
+router.post('/updateProfile', updateProfile);
+
+// get profile
+router.get("/getProfile/:user_id", getProfile);
 
 // get all threats
 router.get("/getThreats", getThreats);
@@ -56,8 +74,8 @@ router.post("/createUser", createUser);
 // get all users
 router.get("/getUsers", getUsers);
 
-// get a user
-router.get("/getUser/:id", getUser);
+// user login
+router.post("/getUser", getUser);
 
 // update a user
 router.put("/updateUser/:id", updateUser);
